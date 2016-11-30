@@ -1,0 +1,141 @@
+// Set up game window
+
+game Invaders(width = 500, height = 500, x = 300, y = 200, speed = 100)
+
+// Set up some global variables
+int alien_increment = 6;
+int alien_y_increment = 0;
+int bullet_increment = 17;
+int counter = 0;
+int i;
+
+
+// create the circle objects that represent the aliens
+circle aliens[10];
+
+// create the rectangles that represent the bullets
+rectangle bullets[5];
+
+// create the rectangle that represents the gun
+triangle gun(x = 250, y = 50, width = 25, height = 12);
+
+// initialization block 
+{
+    for (i = 0; i < 5; i = i+1)
+    {
+        bullets[i].w = 2;
+        bullets[i].h = 20;
+        bullets[i].visible = 0;
+        bullets[i].animation_block = bullet_animate;
+    }
+
+    for (i = 0; i < 10; i = i+1)
+    {
+        aliens[i].radius = 4;
+        aliens[i].animation_block = alien_animate;
+    }
+
+    aliens[0].animation_block = lead_alien_animate;
+
+    aliens[0].x = 250;
+    aliens[0].y = 300;
+    aliens[1].x = 230;
+    aliens[1].y = 320;
+    aliens[2].x = 270;
+    aliens[2].y = 320;
+    aliens[3].x = 210;
+    aliens[3].y = 340;
+    aliens[4].x = 250;
+    aliens[4].y = 340;
+    aliens[5].x = 290;
+    aliens[5].y = 340;
+    aliens[6].x = 190;
+    aliens[6].y = 360;
+    aliens[7].x = 230;
+    aliens[7].y = 360;
+    aliens[8].x = 270;
+    aliens[8].y = 360;
+    aliens[9].x = 310;
+    aliens[9].y = 360;
+}
+
+
+
+// the animation handler for the lead alien (all the others follow the lead)
+
+animation lead_alien_animate(circle lead_alien)
+{
+    if (Invaders.width - 100 < lead_alien.x + alien_increment  || lead_alien.x + alien_increment < 100)
+    {
+    	alien_increment = -alien_increment;
+    } 
+
+    if (2 <= counter)
+     { alien_y_increment = -1;
+	  counter = 0;}
+    else
+     { counter = counter +1;
+       alien_y_increment = 0;}
+
+    lead_alien.x = lead_alien.x + alien_increment;
+    lead_alien.y = lead_alien.y + alien_y_increment;
+}
+
+// animation handler for all but the lead alien
+
+animation alien_animate(circle alien)
+{
+    alien.x = alien.x + alien_increment;
+    alien.y = alien.y + alien_y_increment;
+}
+
+// animation handler for the bullets
+// we assume that bullets are always active (very inefficient)
+
+animation bullet_animate(rectangle cur_bullet)
+{
+    if (cur_bullet.visible)
+    {
+	for (i = 0; i < 10; i = i+1)
+	{
+	   if (aliens[i].visible  && cur_bullet touches aliens[i])
+	      { aliens[i].visible = 0;
+		   cur_bullet.visible = 0;}     
+      }
+	
+      cur_bullet.y = cur_bullet.y  + bullet_increment;
+      if (Invaders.height < cur_bullet.y )
+	    {cur_bullet.visible = 0;} 
+    } 
+}
+
+// input handlers for moving the gun
+
+on leftarrow
+{
+    if (50 < gun.x)
+       { gun.x = gun.x -5; } 
+}
+
+on rightarrow
+{
+    if (gun.x < Invaders.width - 50)
+       { gun.x = gun.x + 5; } 
+}
+
+
+// input handler for space which fires the gun
+
+on space
+{
+    // find a bullet that isn't currently active
+    for (i = 0; i < 5; i = i+1)
+    {
+        if (! bullets[i].visible)
+        { bullets[i].visible = 1;
+	    bullets[i].x = gun.x + gun.w/2;
+	    bullets[i].y = gun.y + gun.h;
+	    i = 6; // break out of the loop
+        } 
+    }
+}

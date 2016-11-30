@@ -1,0 +1,69 @@
+// Set up game window
+
+game Pong(width = 400, height = 300, speed = 95)
+
+
+// declare global variables used in
+// (1) game object instantiation
+// (2) animation and event handler blocks
+// int test[42];
+int paddle_increment = 10;
+int ball_x_increment = 5;
+int ball_y_increment = 2;
+int paddle_width = 5;
+int paddle_height = 40;
+int ball_size = 10;
+
+// create a rectangle that will be used for the paddle
+
+rectangle paddle(x = Pong.width/10, y = Pong.height/2, w = paddle_width, h = paddle_height);
+
+// create a rectangle that will be used for the ball
+// note that the ball has an animation handler
+
+circle ball(x = Pong.width/2, y = Pong.height/2, radius = ball_size/2, animation_block = ball_animate);
+
+// empty initialization block 
+
+{ } 
+
+// animation handler for the ball 
+// this block is called at regular intervals for the ball object
+
+animation ball_animate(circle cur_ball)
+{
+	// if ball has reached either the left or right, reverse its direction
+	if  (cur_ball.x < 0  &&  ball_x_increment < 0 || Pong.width - ball_size < cur_ball.x  && 0 < ball_x_increment) 
+	    {ball_x_increment = -ball_x_increment;}
+    
+
+	// if ball has reached either the top or bottom, reverse its direction
+	if (cur_ball.y < 0 || Pong.height - ball_size < cur_ball.y)
+	   {ball_y_increment = -ball_y_increment;}
+
+
+	// if ball touches the paddle, reverse its direction
+	if (cur_ball touches paddle)
+         {ball_x_increment = -ball_x_increment;}
+     
+	
+      // on each step of the animation, move the ball
+	cur_ball.x = cur_ball.x + ball_x_increment;
+	cur_ball.y = cur_ball.y + ball_y_increment;
+}
+
+// when the user presses the up arrow, move the paddle up
+
+on downarrow
+{
+    if (paddle.y < Pong.height - 2*paddle_increment)
+       {paddle.y = paddle.y + paddle_increment;}
+}
+
+// when the user presses the down arrow, move the paddle down
+
+on uparrow
+{
+    if (paddle_increment < paddle.y)
+       {paddle.y = paddle.y -paddle_increment;}
+}
