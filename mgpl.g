@@ -24,5 +24,5 @@ ifstmt	:	'if' '(' expr ')' stmtblock ( 'else' stmtblock)?;
 forstmt	:	'for' '(' assstmt ';' expr ';' assstmt ')' stmtblock;
 assstmt	:	var '=' expr;
 var	:	idf | idf '[' expr ']' | idf '.' idf | idf '[' expr ']' '.' idf;
-expr	:	number | var | var 'touches' var | '-' expr | '!' expr | '(' expr ')' | expr op expr;
+expr	:	(number | var | var 'touches' var | '-' expr | '!' expr | '(' expr ')') (op expr)*;
 op	:	'||' | '&&'| '==' | '<' | '<=' | '+' | '-' | '*' | '/';
