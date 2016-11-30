@@ -2,20 +2,20 @@ grammar mgpl;
 
 options { backtrack=true; }
 
-number 	:	('0' | ('1'..'9') ('0'..'9')* );
-idf	:	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
-comment	:	'//' ~('\n'|'\r')* '\r'? '\n' {$channel=HIDDEN;};
+NUMBER	:	('0' | ('1'..'9') ('0'..'9')* );
+IDF	:	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
+COMMENT	:	'//' ~('\n'|'\r')* '\r'? '\n' {$channel=HIDDEN;};
 
-prog 	:	'game' idf '(' attrasslist? ')' decl* stmtblock block*;
+prog 	:	'game' IDF '(' attrasslist? ')' decl* stmtblock block*;
 decl	:	vardecl ';' | objdecl ';';
-vardecl	:	'int' idf init? | 'int' idf '[' number ']';
+vardecl	:	('int' IDF init? | 'int' IDF '[' NUMBER ']');
 init	:	'=' expr;
-objdecl	:	objtype idf '(' attrasslist? ')' | objtype idf '[' number ']';
+objdecl	:	objtype IDF '(' attrasslist? ')' | objtype IDF '[' NUMBER ']';
 objtype	:	'rectangle' | 'triangle' | 'circle';
 attrasslist	:	attrass ',' attrasslist | attrass;
-attrass	:	idf '=' expr;
+attrass	:	IDF '=' expr;
 block	:	animblock | eventblock;
-animblock	:	'animation' idf '(' objtype idf ')' stmtblock;
+animblock	:	'animation' IDF '(' objtype IDF ')' stmtblock;
 eventblock	:	'on' keystroke stmtblock;
 keystroke	:	'space' | 'leftarrow' | 'rightarrow' | 'uparrow' | 'downarror';
 stmtblock	:	'{' stmt* '}';
@@ -23,6 +23,6 @@ stmt	:	ifstmt | forstmt | assstmt;
 ifstmt	:	'if' '(' expr ')' stmtblock ( 'else' stmtblock)?;
 forstmt	:	'for' '(' assstmt ';' expr ';' assstmt ')' stmtblock;
 assstmt	:	var '=' expr;
-var	:	idf | idf '[' expr ']' | idf '.' idf | idf '[' expr ']' '.' idf;
-expr	:	(number | var | var 'touches' var | '-' expr | '!' expr | '(' expr ')') (op expr)*;
+var	:	IDF | IDF '[' expr ']' | IDF '.' IDF | IDF '[' expr ']' '.' IDF;
+expr	:	(NUMBER | var | var 'touches' var | '-' expr | '!' expr | '(' expr ')') (op expr)*;
 op	:	'||' | '&&'| '==' | '<' | '<=' | '+' | '-' | '*' | '/';
