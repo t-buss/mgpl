@@ -1,6 +1,8 @@
 grammar mgpl;
 
 options { backtrack=false; output=AST; }
+tokens { EXPR;THEN;ELSE;}
+
 
 NUMBER	:	('0' | ('1'..'9') ('0'..'9')* );
 IDF	:	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
@@ -26,7 +28,10 @@ eventblock	:	'on' keystroke stmtblock;
 keystroke	:	'space' | 'leftarrow' | 'rightarrow' | 'uparrow' | 'downarrow';
 stmtblock	:	'{'! stmt* '}'!;
 stmt	:	ifstmt | forstmt | assstmt ';'!;
-ifstmt	:	'if' '('! expr ')'! stmtblock ( 'else' stmtblock)?;
+ifstmt	:	'if' '(' e=expr ')' s1=stmtblock ( 'else' s2=stmtblock
+		-> ^('if' ^(EXPR $e) ^(THEN $s1) ^(ELSE $s2))
+		| -> ^('if' ^(EXPR expr) ^(THEN $s1))
+);
 forstmt	:	'for' '('! assstmt ';' expr ';' assstmt ')'! stmtblock;
 assstmt	:	var '=' expr;
 
