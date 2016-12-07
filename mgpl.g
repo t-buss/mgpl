@@ -37,11 +37,11 @@ var3	:	| '.' IDF;
 
 //expr	:	(NUMBER | var | var 'touches' var | '-' expr | '!' expr | '(' expr ')') (op expr)*;
 expr	:	orexpr;
-orexpr	:	andexpr ('||' andexpr)*;
-andexpr	:	relexpr ('&&' relexpr)*;
-relexpr	:	addexpr (relop addexpr)*;
-addexpr	:	multexpr (addop multexpr)*;
-multexpr:	unexpr (multop unexpr)*;
+orexpr	:	andexpr ('||'^ andexpr)*;
+andexpr	:	relexpr ('&&'^ relexpr)*;
+relexpr	:	addexpr (relop^ addexpr)*;
+addexpr	:	multexpr (addop^ multexpr)*;
+multexpr:	unexpr (multop^ unexpr)*;
 unexpr	:	unop? atomexpr;
 //atomexpr:	NUMBER | var | var 'touches' var | '(' expr ')';
 atomexpr:	NUMBER | '('!expr')'! |var atomexpr2;
