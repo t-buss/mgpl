@@ -29,10 +29,8 @@ eventblock	:	'on' keystroke^ stmtblock;
 keystroke	:	'space' | 'leftarrow' | 'rightarrow' | 'uparrow' | 'downarrow';
 stmtblock	:	'{'! stmt* '}'!;
 stmt	:	ifstmt | forstmt | assstmt ';'!;
-ifstmt	:	'if' '(' e=expr ')' s1=stmtblock ( 'else' s2=stmtblock
-		-> ^('if' ^(CONDITION $e) ^(THEN $s1) ^(ELSE $s2))
-		| -> ^('if' ^(CONDITION expr) ^(THEN $s1))
-);
+ifstmt	:	'if' '(' expr ')' s1=stmtblock ('else' s2=stmtblock)?
+		-> ^('if' ^(CONDITION expr) ^(THEN $s1) ^(ELSE $s2)?);
 forstmt	:	'for' '(' assstmt ';' expr ';' assstmt ')' stmtblock
 		-> ^('for' ^(HEADER ^(INIT assstmt) ^(CONDITION expr) ^(AFTERTHOUGHT assstmt)) ^(DO stmtblock));
 assstmt	:	var '=' expr -> ^(ASSIGNMENT var ^(VALUE expr));
