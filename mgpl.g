@@ -9,7 +9,7 @@ IDF	:	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
 COMMENT	:	'//' ~('\n'|'\r')* '\r'? '\n' {skip();};
 
 prog 	:	'game' IDF '(' attrasslist? ')' decl* stmtblock block*
-		-> ^(GAME ^(DECLARATIONS decl*) ^(STMTBLOCK stmtblock) ^(BLOCKS block*));
+		-> ^(GAME ^(DECLARATIONS decl*) stmtblock? ^(BLOCKS block*));
 decl	:	vardecl ';'! | objdecl ';'!;
 vardecl	:	'int' IDF init? -> ^(VAR IDF ^(INIT init)?) 
 		| 'int' IDF '[' NUMBER ']' -> ^(VARARRAY IDF);
