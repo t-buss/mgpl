@@ -17,12 +17,14 @@ tokens {
 	DO;
 	OBJECT;
 	OBJECTARRAY;
+	TYPE;
 	VALUE;
 	INDEX;
 	THEN;
 	ELSE;
 	ASSIGNMENT;
 	LEER;
+	EVENT;
 }
 
 
@@ -46,8 +48,9 @@ attrass	:	IDF '=' expr
 		->^(ATTRIBUTE IDF ^(VALUE expr));
 
 block	:	animblock | eventblock;
-animblock	:	'animation'^ IDF '('! objtype IDF ')'! stmtblock;
-eventblock	:	'on' keystroke^ stmtblock;
+animblock:	'animation' IDF '(' objtype IDF ')' stmtblock
+		-> ^('animation' IDF ^(OBJECT ^(TYPE objtype) IDF) stmtblock);
+eventblock	:	'on' keystroke stmtblock -> ^(EVENT ^('on' keystroke) stmtblock);
 keystroke	:	'space' | 'leftarrow' | 'rightarrow' | 'uparrow' | 'downarrow';
 stmtblock	:	'{' stmt* '}' -> ^(STMTBLOCK stmt*);
 stmt	:	ifstmt | forstmt | assstmt ';'!;
