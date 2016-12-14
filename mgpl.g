@@ -41,7 +41,7 @@ objdecl	:	objtype IDF '(' attrasslist? ')' -> ^(OBJECT objtype IDF attrasslist?)
 objtype	:	'rectangle' | 'triangle' | 'circle';
 
 attrasslist :	attrass (',' attrass)*
-		->^(ATTRIBUTELIST attrass attrass*);
+		->^(ATTRIBUTELIST attrass+);
 attrass	:	IDF '=' expr
 		->^(ATTRIBUTE IDF ^(VALUE expr));
 
