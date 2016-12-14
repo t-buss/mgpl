@@ -1,6 +1,6 @@
 grammar mgpl;
 
-options { backtrack=false; output=AST; k=3; }
+options { backtrack=false; output=AST; k=1; }
 tokens { 
 	GAME;
 	DECLARATIONS;
@@ -16,14 +16,13 @@ tokens {
 	AFTERTHOUGHT;
 	DO;
 	OBJECT;
-	OBJECTARRAY;
 	TYPE;
 	VALUE;
 	INDEX;
 	THEN;
 	ELSE;
 	ASSIGNMENT;
-	LEER;
+	COUNT;
 	EVENT;
 }
 
@@ -35,11 +34,11 @@ COMMENT	:	'//' ~('\n'|'\r')* '\r'? '\n' {skip();};
 prog 	:	'game' IDF '(' attrasslist? ')' decl* stmtblock block*
 		-> ^(GAME ^(DECLARATIONS decl*) stmtblock ^(BLOCKS block*));
 decl	:	vardecl ';'! | objdecl ';'!;
-vardecl	:	'int' IDF init? -> ^(VAR IDF init?) 
-		| 'int' IDF '[' NUMBER ']' -> ^(VARARRAY IDF);
+vardecl	:	'int' IDF vardecl2 -> ^(VAR IDF vardecl2?);
+vardecl2:	init? | '[' NUMBER ']';
 init	:	'=' expr -> ^(INIT expr);
-objdecl	:	objtype IDF '(' attrasslist? ')' -> ^(OBJECT objtype IDF attrasslist?)
-		| objtype IDF '[' NUMBER ']' -> ^(OBJECTARRAY objtype IDF);
+objdecl	:	objtype IDF objdecl2 -> ^(OBJECT ^(TYPE objtype) IDF objdecl2?);
+objdecl2:	'('! attrasslist? ')'!  | '[' NUMBER ']' -> ^(COUNT NUMBER);
 objtype	:	'rectangle' | 'triangle' | 'circle';
 
 attrasslist :	attrass (',' attrass)*
