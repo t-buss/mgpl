@@ -1,6 +1,6 @@
 grammar mgpl;
 
-options { backtrack=false; output=AST; }
+options { backtrack=false; output=AST; k=3; }
 tokens { 
 	GAME;
 	DECLARATIONS;
